@@ -1,0 +1,59 @@
+﻿@model FunctionApp.Models.FunktsiooniUurimine
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>FunktsiooniUurimine</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Valem" class="control-label"></label>
+                <input asp-for="Valem" class="form-control" />
+                <span asp-validation-for="Valem" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Maaramispiirkond" class="control-label"></label>
+                <input asp-for="Maaramispiirkond" class="form-control" />
+                <span asp-validation-for="Maaramispiirkond" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tuletis" class="control-label"></label>
+                <input asp-for="Tuletis" class="form-control" />
+                <span asp-validation-for="Tuletis" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="KriitilisedPunktid" class="control-label"></label>
+                <input asp-for="KriitilisedPunktid" class="form-control" />
+                <span asp-validation-for="KriitilisedPunktid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ekstreemumid" class="control-label"></label>
+                <input asp-for="Ekstreemumid" class="form-control" />
+                <span asp-validation-for="Ekstreemumid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LuodudAeg" class="control-label"></label>
+                <input asp-for="LuodudAeg" class="form-control" />
+                <span asp-validation-for="LuodudAeg" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

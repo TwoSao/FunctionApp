@@ -1,0 +1,359 @@
+﻿@model FunctionApp.Models.FunktsiooniUurimine
+
+@{
+    ViewData["Title"] = "Lisa funktsioon";
+}
+
+<h1>Lisa funktsioon</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+
+        ```
+        <form asp-action="Create">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Funktsioon -->
+            <div class="form-group mb-3">
+                <label asp-for="Valem" class="control-label">
+                    Funktsioon f(x)
+                </label>
+
+                <input asp-for="Valem"
+                       class="form-control"
+                       id="valemInput"
+                       placeholder="Näiteks: x² - 4x + 3"
+                       autocomplete="off" />
+
+                <span asp-validation-for="Valem" class="text-danger"></span>
+            </div>
+
+            <!-- Matemaatiline klaviatuur -->
+            <div class="math-keyboard">
+
+                <div class="math-row">
+                    <button type="button" onclick="lisa('x')">x</button>
+                    <button type="button" onclick="lisa('(')">(</button>
+                    <button type="button" onclick="lisa(')')">)</button>
+                    <button type="button" onclick="lisa('+')">+</button>
+                    <button type="button" onclick="lisa('-')">−</button>
+                </div>
+
+                <div class="math-row">
+                    <button type="button" onclick="lisa('0')">0</button>
+                    <button type="button" onclick="lisa('1')">1</button>
+                    <button type="button" onclick="lisa('2')">2</button>
+                    <button type="button" onclick="lisa('3')">3</button>
+                    <button type="button" onclick="lisa('4')">4</button>
+                </div>
+
+                <div class="math-row">
+                    <button type="button" onclick="lisa('5')">5</button>
+                    <button type="button" onclick="lisa('6')">6</button>
+                    <button type="button" onclick="lisa('7')">7</button>
+                    <button type="button" onclick="lisa('8')">8</button>
+                    <button type="button" onclick="lisa('9')">9</button>
+                </div>
+
+                <div class="math-row">
+                    <button type="button" onclick="lisa('*')">×</button>
+                    <button type="button" onclick="lisa('/')">÷</button>
+                    <button type="button" onclick="lisa('^2')">x²</button>
+                    <button type="button" onclick="lisa('^3')">x³</button>
+                    <button type="button" onclick="lisa('^')">xⁿ</button>
+                </div>
+
+                <div class="math-row">
+                    <button type="button" onclick="lisa('sqrt(')">√</button>
+                    <button type="button" onclick="lisa('pi')">π</button>
+                    <button type="button" onclick="lisa('e')">e</button>
+                    <button type="button" onclick="lisa('sin(')">sin</button>
+                    <button type="button" onclick="lisa('cos(')">cos</button>
+                </div>
+
+                <div class="math-row">
+                    <button type="button" onclick="lisa('tan(')">tan</button>
+                    <button type="button" onclick="lisa('log(')">log</button>
+                    <button type="button" onclick="lisa('abs(')">|x|</button>
+                    <button type="button" onclick="udalit()">⌫</button>
+                    <button type="button" onclick="puhasta()">C</button>
+                </div>
+
+            </div>
+
+            <button type="button"
+                    class="btn btn-secondary mt-3 mb-4"
+                    onclick="arvutaFunktsioon()">
+                Arvuta funktsioon
+            </button>
+
+            <!-- Määramispiirkond -->
+            <div class="form-group mb-3">
+                <label asp-for="Maaramispiirkond" class="control-label">
+                    Määramispiirkond
+                </label>
+                <input asp-for="Maaramispiirkond"
+                       class="form-control"
+                       id="maaramispiirkond" />
+            </div>
+
+            <!-- Tuletis -->
+            <div class="form-group mb-3">
+                <label asp-for="Tuletis" class="control-label">
+                    Tuletis f'(x)
+                </label>
+                <input asp-for="Tuletis"
+                       class="form-control"
+                       id="tuletis" />
+            </div>
+
+            <!-- Kriitilised punktid -->
+            <div class="form-group mb-3">
+                <label asp-for="KriitilisedPunktid" class="control-label">
+                    Kriitilised punktid
+                </label>
+                <input asp-for="KriitilisedPunktid"
+                       class="form-control"
+                       id="kriitilisedPunktid" />
+            </div>
+
+            <!-- Ekstreemumid -->
+            <div class="form-group mb-3">
+                <label asp-for="Ekstreemumid" class="control-label">
+                    Ekstreemumid
+                </label>
+                <input asp-for="Ekstreemumid"
+                       class="form-control"
+                       id="ekstreemumid" />
+            </div>
+
+            <!-- Loomise aeg -->
+            <div class="form-group mb-3">
+                <label asp-for="LuodudAeg" class="control-label">
+                    Loomise aeg
+                </label>
+
+                <input asp-for="LuodudAeg"
+                       class="form-control"
+                       type="datetime-local" />
+            </div>
+
+            <div class="form-group mt-4">
+                <input type="submit"
+                       value="Lisa funktsioon"
+                       class="btn btn-primary" />
+            </div>
+
+        </form>
+
+    </div>
+    ```
+
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index">Tagasi nimekirja</a>
+</div>
+
+<style>
+    .math-keyboard {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 10px;
+        background: #f5f5f5;
+        max-width: 500px;
+    }
+
+    .math-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .math-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .math-row button {
+        flex: 1;
+        height: 45px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background: white;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    .math-row button:hover {
+        background: #e9e9e9;
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    ```
+    <script>
+        const input = document.getElementById("valemInput");
+
+        function lisa(tekst) {
+
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+
+            const vana = input.value;
+
+            input.value =
+                vana.substring(0, start) +
+                tekst +
+                vana.substring(end);
+
+            input.focus();
+
+            const uusPositsioon = start + tekst.length;
+
+            input.setSelectionRange(
+                uusPositsioon,
+                uusPositsioon
+            );
+        }
+
+        function uDalit() {
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+
+            if (start === end && start > 0) {
+
+                input.value =
+                    input.value.substring(0, start - 1) +
+                    input.value.substring(end);
+
+                input.setSelectionRange(
+                    start - 1,
+                    start - 1
+                );
+
+            } else {
+
+                input.value =
+                    input.value.substring(0, start) +
+                    input.value.substring(end);
+
+                input.setSelectionRange(start, start);
+            }
+
+            input.focus();
+        }
+
+        function uDalit() {
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+
+            if (start === end && start > 0) {
+                input.value =
+                    input.value.substring(0, start - 1) +
+                    input.value.substring(start);
+
+                input.setSelectionRange(start - 1, start - 1);
+            }
+            else {
+                input.value =
+                    input.value.substring(0, start) +
+                    input.value.substring(end);
+
+                input.setSelectionRange(start, start);
+            }
+
+            input.focus();
+        }
+
+        function puhasta() {
+            input.value = "";
+            input.focus();
+        }
+
+                function arvutaFunktsioon() {
+
+
+        const valem = document.getElementById("valemInput").value
+            .trim()
+            .replace(/\s+/g, "");
+
+        if (valem === "") {
+            alert("Sisesta kõigepealt funktsioon.");
+            return;
+        }
+
+        const maaramispiirkond =
+            document.getElementById("maaramispiirkond");
+
+        const tuletis =
+            document.getElementById("tuletis");
+
+        const kriitilised =
+            document.getElementById("kriitilisedPunktid");
+
+        const ekstreemumid =
+            document.getElementById("ekstreemumid");
+
+
+        // Määramispiirkond
+        maaramispiirkond.value = "x ∈ ℝ";
+
+
+        // x² - 4x + 3
+        if (
+            valem === "x^2-4*x+3" ||
+            valem === "x^2-4x+3"
+        ) {
+
+            tuletis.value = "2*x - 4";
+
+            kriitilised.value = "x = 2";
+
+            ekstreemumid.value =
+                "miinimum: (2; -1)";
+
+            return;
+        }
+
+
+        // x³ - 3x
+        if (
+            valem === "x^3-3*x" ||
+            valem === "x^3-3x"
+        ) {
+
+            tuletis.value = "3*x^2 - 3";
+
+            kriitilised.value =
+                "x = -1, x = 1";
+
+            ekstreemumid.value =
+                "maksimum: (-1; 2), miinimum: (1; -2)";
+
+            return;
+        }
+
+
+        // Kui funktsioon pole пока поддерживается
+        tuletis.value = "";
+        kriitilised.value = "";
+        ekstreemumid.value = "";
+
+        alert(
+            "Selle funktsiooni automaatne arvutamine ei ole veel lisatud."
+        );
+      
+
+        }
+
+    </script>
+
+
+}

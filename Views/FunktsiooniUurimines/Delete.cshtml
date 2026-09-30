@@ -1,0 +1,57 @@
+﻿@model FunctionApp.Models.FunktsiooniUurimine
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>FunktsiooniUurimine</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Valem)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Valem)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Maaramispiirkond)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Maaramispiirkond)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Tuletis)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Tuletis)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.KriitilisedPunktid)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.KriitilisedPunktid)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Ekstreemumid)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Ekstreemumid)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LuodudAeg)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LuodudAeg)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
