@@ -1,123 +1,77 @@
-﻿@model FunctionApp.Models.FunktsiooniUurimine
+@model FunctionApp.Models.FunktsiooniUurimine
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Funktsiooni detailid";
 }
 
-<h1>Funktsiooni uurimine</h1>
-
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">Valem</dt>
-        <dd class="col-sm-10">@Model.Valem</dd>
-
-        ```
-        <dt class="col-sm-2">Määramispiirkond</dt>
-        <dd class="col-sm-10">@Model.Maaramispiirkond</dd>
-
-        <dt class="col-sm-2">Tuletis</dt>
-        <dd class="col-sm-10">@Model.Tuletis</dd>
-
-        <dt class="col-sm-2">Kriitilised punktid</dt>
-        <dd class="col-sm-10">@Model.KriitilisedPunktid</dd>
-
-        <dt class="col-sm-2">Ekstreemumid</dt>
-        <dd class="col-sm-10">@Model.Ekstreemumid</dd>
-
-        <dt class="col-sm-2">Loodud aeg</dt>
-        <dd class="col-sm-10">@Model.LuodudAeg</dd>
-    </dl>
-    ```
-
-</div>
-
+<h2>Funktsiooni uurimine</h2>
 <hr />
 
-<h3>Graafik</h3>
+<div class="row">
+    <div class="col-md-5">
+        <dl class="row">
+            <dt class="col-sm-4">Valem</dt>
+            <dd class="col-sm-8">@Model.Valem</dd>
 
-<canvas id="funktsiooniGraafik"></canvas>
+            <dt class="col-sm-4">Määramispiirkond</dt>
+            <dd class="col-sm-8">@Model.Maaramispiirkond</dd>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <dt class="col-sm-4">Tuletis f'(x)</dt>
+            <dd class="col-sm-8">@Model.Tuletis</dd>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.0.1/math.min.js"></script>
+            <dt class="col-sm-4">Kriitilised punktid</dt>
+            <dd class="col-sm-8">@Model.KriitilisedPunktid</dd>
 
-<script>
-    const valem = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Valem));
-    const tuletis = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Tuletis));
+            <dt class="col-sm-4">Ekstreemumid</dt>
+            <dd class="col-sm-8">@Model.Ekstreemumid</dd>
 
-    const xVaartused = [];
-    const yFunktsioon = [];
-    const yTuletis = [];
+            <dt class="col-sm-4">Salvestatud</dt>
+            <dd class="col-sm-8">@Model.LuodudAeg.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</dd>
+        </dl>
 
-    for (let x = -5; x <= 5; x += 0.1) {
-        xVaartused.push(Number(x.toFixed(2)));
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">Muuda</a>
+        <a asp-action="Index" class="btn btn-outline-primary btn-sm ms-2">Tagasi nimekirja</a>
+    </div>
 
-        try {
-            const f = math.evaluate(valem, { x: x });
-            const df = math.evaluate(tuletis, { x: x });
+    <div class="col-md-7">
+        <canvas id="funktsiooniGraafik"></canvas>
+    </div>
+</div>
 
-            yFunktsioon.push(Number(f));
-            yTuletis.push(Number(df));
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.0.1/math.min.js"></script>
+    <script>
+        const valem = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Valem));
+
+        const xArr = [], yArr = [];
+        for (let x = -5; x <= 5; x += 0.1) {
+            xArr.push(Number(x.toFixed(2)));
+            try { yArr.push(Number(math.evaluate(valem, { x }))); }
+            catch { yArr.push(null); }
         }
-        catch (error) {
-            yFunktsioon.push(null);
-            yTuletis.push(null);
-        }
-    }
 
-    new Chart(
-        document.getElementById('funktsiooniGraafik'),
-        {
-            type: 'line',
-
+        new Chart(document.getElementById("funktsiooniGraafik"), {
+            type: "line",
             data: {
-                labels: xVaartused,
-
-                datasets: [
-                    {
-                        label: 'f(x) = ' + valem,
-                        data: yFunktsioon,
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        tension: 0.2
-                    },
-                    {
-                        label: "f'(x) = " + tuletis,
-                        data: yTuletis,
-                        borderWidth: 2,
-                        borderDash: [6, 6],
-                        pointRadius: 0,
-                        tension: 0.2
-                    }
-                ]
+                labels: xArr,
+                datasets: [{
+                    label: "f(x) = " + valem,
+                    data: yArr,
+                    borderColor: "blue",
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.2,
+                    fill: false
+                }]
             },
-
             options: {
                 responsive: true,
-
                 scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'x'
-                        }
-                    },
-
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'y'
-                        }
-                    }
+                    x: { title: { display: true, text: "x" } },
+                    y: { title: { display: true, text: "y" } }
                 }
             }
-        }
-    );
-</script>
-
-<br />
-
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+        });
+    </script>
+}

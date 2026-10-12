@@ -1,359 +1,446 @@
-﻿@model FunctionApp.Models.FunktsiooniUurimine
+@model FunctionApp.Models.FunktsiooniUurimine
 
 @{
     ViewData["Title"] = "Lisa funktsioon";
 }
 
-<h1>Lisa funktsioon</h1>
+<ul class="nav nav-tabs mb-4" id="peaTab">
+    <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#arvutaTab">Arvuta</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#teooriTab">Teooria</button>
+    </li>
+</ul>
 
-<hr />
+<div class="tab-content">
 
-<div class="row">
-    <div class="col-md-6">
-
-        ```
-        <form asp-action="Create">
-
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <!-- Funktsioon -->
-            <div class="form-group mb-3">
-                <label asp-for="Valem" class="control-label">
-                    Funktsioon f(x)
-                </label>
-
-                <input asp-for="Valem"
-                       class="form-control"
-                       id="valemInput"
-                       placeholder="Näiteks: x² - 4x + 3"
-                       autocomplete="off" />
-
-                <span asp-validation-for="Valem" class="text-danger"></span>
-            </div>
-
-            <!-- Matemaatiline klaviatuur -->
-            <div class="math-keyboard">
-
-                <div class="math-row">
-                    <button type="button" onclick="lisa('x')">x</button>
-                    <button type="button" onclick="lisa('(')">(</button>
-                    <button type="button" onclick="lisa(')')">)</button>
-                    <button type="button" onclick="lisa('+')">+</button>
-                    <button type="button" onclick="lisa('-')">−</button>
+    <!-- ===== ARVUTA TAB ===== -->
+    <div class="tab-pane fade show active" id="arvutaTab">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="form-group mb-3">
+                    <label class="control-label fw-semibold">Funktsioon f(x)</label>
+                    <input id="valemInput" class="form-control" placeholder="Näiteks: x^2 - 4*x + 3" autocomplete="off" />
+                    <small class="text-muted">Kasuta: x^2, sqrt(x), sin(x), cos(x), log(x), abs(x), pi, e</small>
                 </div>
 
-                <div class="math-row">
-                    <button type="button" onclick="lisa('0')">0</button>
-                    <button type="button" onclick="lisa('1')">1</button>
-                    <button type="button" onclick="lisa('2')">2</button>
-                    <button type="button" onclick="lisa('3')">3</button>
-                    <button type="button" onclick="lisa('4')">4</button>
+                <div class="math-keyboard mb-3">
+                    <div class="math-row">
+                        <button type="button" onclick="lisa('x')">x</button>
+                        <button type="button" onclick="lisa('(')"> ( </button>
+                        <button type="button" onclick="lisa(')')"> ) </button>
+                        <button type="button" onclick="lisa('+')">+</button>
+                        <button type="button" onclick="lisa('-')">−</button>
+                    </div>
+                    <div class="math-row">
+                        <button type="button" onclick="lisa('0')">0</button>
+                        <button type="button" onclick="lisa('1')">1</button>
+                        <button type="button" onclick="lisa('2')">2</button>
+                        <button type="button" onclick="lisa('3')">3</button>
+                        <button type="button" onclick="lisa('4')">4</button>
+                    </div>
+                    <div class="math-row">
+                        <button type="button" onclick="lisa('5')">5</button>
+                        <button type="button" onclick="lisa('6')">6</button>
+                        <button type="button" onclick="lisa('7')">7</button>
+                        <button type="button" onclick="lisa('8')">8</button>
+                        <button type="button" onclick="lisa('9')">9</button>
+                    </div>
+                    <div class="math-row">
+                        <button type="button" onclick="lisa('*')">×</button>
+                        <button type="button" onclick="lisa('/')">÷</button>
+                        <button type="button" onclick="lisa('^2')">x²</button>
+                        <button type="button" onclick="lisa('^3')">x³</button>
+                        <button type="button" onclick="lisa('^')">xⁿ</button>
+                    </div>
+                    <div class="math-row">
+                        <button type="button" onclick="lisa('sqrt(')">√</button>
+                        <button type="button" onclick="lisa('pi')">π</button>
+                        <button type="button" onclick="lisa('e')">e</button>
+                        <button type="button" onclick="lisa('sin(')">sin</button>
+                        <button type="button" onclick="lisa('cos(')">cos</button>
+                    </div>
+                    <div class="math-row">
+                        <button type="button" onclick="lisa('tan(')">tan</button>
+                        <button type="button" onclick="lisa('log(')">log</button>
+                        <button type="button" onclick="lisa('abs(')">|x|</button>
+                        <button type="button" onclick="kustuta()">⌫</button>
+                        <button type="button" onclick="puhasta()">C</button>
+                    </div>
                 </div>
 
-                <div class="math-row">
-                    <button type="button" onclick="lisa('5')">5</button>
-                    <button type="button" onclick="lisa('6')">6</button>
-                    <button type="button" onclick="lisa('7')">7</button>
-                    <button type="button" onclick="lisa('8')">8</button>
-                    <button type="button" onclick="lisa('9')">9</button>
+                <button type="button" class="btn btn-primary mb-4" onclick="arvuta()">Arvuta</button>
+
+                <div id="tulemused" style="display:none;">
+                    <div class="card mb-3">
+                        <div class="card-body p-3">
+                            <div class="mb-2">
+                                <span class="fw-semibold">Määramispiirkond:</span>
+                                <span id="maaramispiirkond" class="ms-2"></span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="fw-semibold">Tuletis f'(x):</span>
+                                <span id="tuletis" class="ms-2 font-monospace"></span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="fw-semibold">Nullkohad:</span>
+                                <span id="nullkohad" class="ms-2"></span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="fw-semibold">Kriitilised punktid:</span>
+                                <span id="kriitilisedPunktid" class="ms-2"></span>
+                            </div>
+                            <div>
+                                <span class="fw-semibold">Ekstreemumid:</span>
+                                <span id="ekstreemumid" class="ms-2"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="veaTeade" class="alert alert-warning" style="display:none;"></div>
+
+                    <form asp-action="Create" method="post" id="salvestaForm">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="Valem" id="hValem" />
+                        <input type="hidden" name="Maaramispiirkond" id="hMaaramispiirkond" />
+                        <input type="hidden" name="Tuletis" id="hTuletis" />
+                        <input type="hidden" name="KriitilisedPunktid" id="hKriitilised" />
+                        <input type="hidden" name="Ekstreemumid" id="hEkstreemumid" />
+                        <button type="button" class="btn btn-success" onclick="salvesta()">Salvesta andmebaasi</button>
+                    </form>
                 </div>
-
-                <div class="math-row">
-                    <button type="button" onclick="lisa('*')">×</button>
-                    <button type="button" onclick="lisa('/')">÷</button>
-                    <button type="button" onclick="lisa('^2')">x²</button>
-                    <button type="button" onclick="lisa('^3')">x³</button>
-                    <button type="button" onclick="lisa('^')">xⁿ</button>
-                </div>
-
-                <div class="math-row">
-                    <button type="button" onclick="lisa('sqrt(')">√</button>
-                    <button type="button" onclick="lisa('pi')">π</button>
-                    <button type="button" onclick="lisa('e')">e</button>
-                    <button type="button" onclick="lisa('sin(')">sin</button>
-                    <button type="button" onclick="lisa('cos(')">cos</button>
-                </div>
-
-                <div class="math-row">
-                    <button type="button" onclick="lisa('tan(')">tan</button>
-                    <button type="button" onclick="lisa('log(')">log</button>
-                    <button type="button" onclick="lisa('abs(')">|x|</button>
-                    <button type="button" onclick="udalit()">⌫</button>
-                    <button type="button" onclick="puhasta()">C</button>
-                </div>
-
             </div>
 
-            <button type="button"
-                    class="btn btn-secondary mt-3 mb-4"
-                    onclick="arvutaFunktsioon()">
-                Arvuta funktsioon
-            </button>
-
-            <!-- Määramispiirkond -->
-            <div class="form-group mb-3">
-                <label asp-for="Maaramispiirkond" class="control-label">
-                    Määramispiirkond
-                </label>
-                <input asp-for="Maaramispiirkond"
-                       class="form-control"
-                       id="maaramispiirkond" />
+            <div class="col-md-7">
+                <canvas id="funktsiooniGraafik" style="display:none;"></canvas>
             </div>
-
-            <!-- Tuletis -->
-            <div class="form-group mb-3">
-                <label asp-for="Tuletis" class="control-label">
-                    Tuletis f'(x)
-                </label>
-                <input asp-for="Tuletis"
-                       class="form-control"
-                       id="tuletis" />
-            </div>
-
-            <!-- Kriitilised punktid -->
-            <div class="form-group mb-3">
-                <label asp-for="KriitilisedPunktid" class="control-label">
-                    Kriitilised punktid
-                </label>
-                <input asp-for="KriitilisedPunktid"
-                       class="form-control"
-                       id="kriitilisedPunktid" />
-            </div>
-
-            <!-- Ekstreemumid -->
-            <div class="form-group mb-3">
-                <label asp-for="Ekstreemumid" class="control-label">
-                    Ekstreemumid
-                </label>
-                <input asp-for="Ekstreemumid"
-                       class="form-control"
-                       id="ekstreemumid" />
-            </div>
-
-            <!-- Loomise aeg -->
-            <div class="form-group mb-3">
-                <label asp-for="LuodudAeg" class="control-label">
-                    Loomise aeg
-                </label>
-
-                <input asp-for="LuodudAeg"
-                       class="form-control"
-                       type="datetime-local" />
-            </div>
-
-            <div class="form-group mt-4">
-                <input type="submit"
-                       value="Lisa funktsioon"
-                       class="btn btn-primary" />
-            </div>
-
-        </form>
-
+        </div>
     </div>
-    ```
 
-</div>
+    <!-- ===== TEOORIA TAB ===== -->
+    <div class="tab-pane fade" id="teooriTab">
+        <div class="row">
+            <div class="col-md-10">
 
-<div class="mt-3">
-    <a asp-action="Index">Tagasi nimekirja</a>
+                <div class="card mb-3">
+                    <div class="card-header fw-semibold">1. Määramispiirkond (D(f))</div>
+                    <div class="card-body">
+                        <p>Määramispiirkond on kõigi x-väärtuste hulk, mille korral funktsioon on defineeritud.</p>
+                        <ul>
+                            <li>Polünoomid: <code>D(f) = ℝ</code> (kõik reaalarvud)</li>
+                            <li>Ruutjuur <code>√g(x)</code>: vajab <code>g(x) ≥ 0</code></li>
+                            <li>Murd <code>1/g(x)</code>: vajab <code>g(x) ≠ 0</code></li>
+                            <li>Logaritm <code>log(g(x))</code>: vajab <code>g(x) &gt; 0</code></li>
+                        </ul>
+                        <p><strong>Näide:</strong> f(x) = √(x − 2) → D(f) = [2; +∞)</p>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header fw-semibold">2. Tuletis f'(x)</div>
+                    <div class="card-body">
+                        <p>Tuletis näitab funktsiooni muutumiskiirust punktis x — graafiku puutuja tõusu.</p>
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light"><tr><th>f(x)</th><th>f'(x)</th></tr></thead>
+                            <tbody>
+                                <tr><td>c (konstant)</td><td>0</td></tr>
+                                <tr><td>xⁿ</td><td>n · xⁿ⁻¹</td></tr>
+                                <tr><td>sin(x)</td><td>cos(x)</td></tr>
+                                <tr><td>cos(x)</td><td>−sin(x)</td></tr>
+                                <tr><td>eˣ</td><td>eˣ</td></tr>
+                                <tr><td>ln(x)</td><td>1/x</td></tr>
+                                <tr><td>√x</td><td>1 / (2√x)</td></tr>
+                            </tbody>
+                        </table>
+                        <p><strong>Näide:</strong> f(x) = x³ − 3x → f'(x) = 3x² − 3</p>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header fw-semibold">3. Kriitilised punktid</div>
+                    <div class="card-body">
+                        <p>Kriitilised punktid on x-väärtused, kus <strong>f'(x) = 0</strong> või f'(x) ei eksisteeri.</p>
+                        <p>Need on potentsiaalsed ekstreemumite kohad.</p>
+                        <p><strong>Näide:</strong> f'(x) = 3x² − 3 = 0 → x² = 1 → x = ±1</p>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header fw-semibold">4. Ekstreemumid (maksimum ja miinimum)</div>
+                    <div class="card-body">
+                        <p>Ekstreemum on punkt, kus funktsioon saavutab lokaalse maksimumi või miinimumi.</p>
+                        <ul>
+                            <li>Kui f'(x) muutub <strong>+ → −</strong>, siis on tegemist <strong>lokaalse maksimumiga</strong></li>
+                            <li>Kui f'(x) muutub <strong>− → +</strong>, siis on tegemist <strong>lokaalse miinimumiga</strong></li>
+                            <li>Kui märk ei muutu, siis on tegemist <strong>käändepunktiga</strong></li>
+                        </ul>
+                        <p><strong>Näide:</strong> f(x) = x³ − 3x:</p>
+                        <ul>
+                            <li>x = −1: f'(x) muutub + → − → <strong>maksimum</strong> f(−1) = 2</li>
+                            <li>x = 1: f'(x) muutub − → + → <strong>miinimum</strong> f(1) = −2</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header fw-semibold">5. Nullkohad</div>
+                    <div class="card-body">
+                        <p>Nullkohad on x-väärtused, kus <strong>f(x) = 0</strong> — graafiku lõikepunktid x-teljega.</p>
+                        <p><strong>Näide:</strong> f(x) = x² − 4x + 3 = 0 → (x−1)(x−3) = 0 → x = 1, x = 3</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <style>
-    .math-keyboard {
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 10px;
-        background: #f5f5f5;
-        max-width: 500px;
-    }
-
-    .math-row {
-        display: flex;
-        gap: 6px;
-        margin-bottom: 6px;
-    }
-
-    .math-row:last-child {
-        margin-bottom: 0;
-    }
-
-    .math-row button {
-        flex: 1;
-        height: 45px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        background: white;
-        font-size: 18px;
-        cursor: pointer;
-    }
-
-    .math-row button:hover {
-        background: #e9e9e9;
-    }
+    .math-keyboard { border: 1px solid #ddd; border-radius: 10px; padding: 10px; background: #f5f5f5; }
+    .math-row { display: flex; gap: 6px; margin-bottom: 6px; }
+    .math-row button { flex: 1; height: 42px; border: 1px solid #ccc; border-radius: 6px; background: white; font-size: 16px; cursor: pointer; }
+    .math-row button:hover { background: #e9e9e9; }
 </style>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
-    ```
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.0.1/math.min.js"></script>
     <script>
         const input = document.getElementById("valemInput");
+        let graafik = null;
 
         function lisa(tekst) {
-
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-
-            const vana = input.value;
-
-            input.value =
-                vana.substring(0, start) +
-                tekst +
-                vana.substring(end);
-
+            const s = input.selectionStart, e = input.selectionEnd;
+            input.value = input.value.substring(0, s) + tekst + input.value.substring(e);
             input.focus();
-
-            const uusPositsioon = start + tekst.length;
-
-            input.setSelectionRange(
-                uusPositsioon,
-                uusPositsioon
-            );
+            input.setSelectionRange(s + tekst.length, s + tekst.length);
         }
 
-        function uDalit() {
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-
-            if (start === end && start > 0) {
-
-                input.value =
-                    input.value.substring(0, start - 1) +
-                    input.value.substring(end);
-
-                input.setSelectionRange(
-                    start - 1,
-                    start - 1
-                );
-
+        function kustuta() {
+            const s = input.selectionStart, e = input.selectionEnd;
+            if (s === e && s > 0) {
+                input.value = input.value.substring(0, s - 1) + input.value.substring(s);
+                input.setSelectionRange(s - 1, s - 1);
             } else {
-
-                input.value =
-                    input.value.substring(0, start) +
-                    input.value.substring(end);
-
-                input.setSelectionRange(start, start);
+                input.value = input.value.substring(0, s) + input.value.substring(e);
+                input.setSelectionRange(s, s);
             }
-
             input.focus();
         }
 
-        function uDalit() {
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
+        function puhasta() { input.value = ""; input.focus(); }
 
-            if (start === end && start > 0) {
-                input.value =
-                    input.value.substring(0, start - 1) +
-                    input.value.substring(start);
+        // Evalueeri funktsioon x juures, tagasta null kui viga
+        function f(valem, x) {
+            try {
+                const v = math.evaluate(valem, { x });
+                return isFinite(v) ? v : null;
+            } catch { return null; }
+        }
 
-                input.setSelectionRange(start - 1, start - 1);
+        // Numbriline tuletis (keskmise diferentsi meetod)
+        function df(valem, x) {
+            const h = 1e-7;
+            const f1 = f(valem, x + h);
+            const f2 = f(valem, x - h);
+            if (f1 === null || f2 === null) return null;
+            return (f1 - f2) / (2 * h);
+        }
+
+        // Teine tuletis
+        function d2f(valem, x) {
+            const h = 1e-5;
+            const f1 = f(valem, x + h);
+            const f0 = f(valem, x);
+            const f2 = f(valem, x - h);
+            if (f1 === null || f0 === null || f2 === null) return null;
+            return (f1 - 2 * f0 + f2) / (h * h);
+        }
+
+        // Leia tuletise sümboolne avaldis math.js abil
+        function arvutaTuletis(valem) {
+            try {
+                const node = math.parse(valem);
+                const derived = math.derivative(node, 'x');
+                return derived.toString();
+            } catch { return null; }
+        }
+
+        // Leia nullkohad bisektsiooni meetodil vahemikus [-10, 10]
+        function leiaNullkohad(valem) {
+            const nullid = [];
+            const samm = 0.05;
+            let eelmine = f(valem, -10);
+
+            for (let x = -10 + samm; x <= 10; x += samm) {
+                const praegune = f(valem, x);
+                if (eelmine !== null && praegune !== null && eelmine * praegune < 0) {
+                    // Bisektsioon
+                    let a = x - samm, b = x;
+                    for (let i = 0; i < 50; i++) {
+                        const m = (a + b) / 2;
+                        const fm = f(valem, m);
+                        if (fm === null) break;
+                        if (f(valem, a) * fm < 0) b = m; else a = m;
+                    }
+                    const null_x = (a + b) / 2;
+                    if (!nullid.some(n => Math.abs(n - null_x) < 0.01)) {
+                        nullid.push(null_x);
+                    }
+                } else if (praegune !== null && Math.abs(praegune) < 1e-6) {
+                    if (!nullid.some(n => Math.abs(n - x) < 0.01)) {
+                        nullid.push(x);
+                    }
+                }
+                eelmine = praegune;
             }
-            else {
-                input.value =
-                    input.value.substring(0, start) +
-                    input.value.substring(end);
+            return nullid;
+        }
 
-                input.setSelectionRange(start, start);
+        // Leia kriitilised punktid (f'(x) = 0)
+        function leiKriitilised(valem) {
+            const kriitilised = [];
+            const samm = 0.05;
+            let eelmine = df(valem, -10);
+
+            for (let x = -10 + samm; x <= 10; x += samm) {
+                const praegune = df(valem, x);
+                if (eelmine !== null && praegune !== null && eelmine * praegune < 0) {
+                    let a = x - samm, b = x;
+                    for (let i = 0; i < 50; i++) {
+                        const m = (a + b) / 2;
+                        const dm = df(valem, m);
+                        if (dm === null) break;
+                        if (df(valem, a) * dm < 0) b = m; else a = m;
+                    }
+                    const kx = (a + b) / 2;
+                    if (!kriitilised.some(k => Math.abs(k - kx) < 0.01)) {
+                        kriitilised.push(kx);
+                    }
+                }
+                eelmine = praegune;
+            }
+            return kriitilised;
+        }
+
+        function umber(x) { return Math.round(x * 1000) / 1000; }
+
+        function arvuta() {
+            const valem = input.value.trim();
+            if (!valem) { alert("Sisesta kõigepealt funktsioon."); return; }
+
+            const viga = document.getElementById("veaTeade");
+            viga.style.display = "none";
+
+            // Kontrolli kas funktsioon on kehtiv
+            if (f(valem, 0) === null && f(valem, 1) === null) {
+                viga.textContent = "Funktsioon on vigane või ei ole defineeritud. Kontrolli süntaksit.";
+                viga.style.display = "block";
+                document.getElementById("tulemused").style.display = "block";
+                return;
             }
 
-            input.focus();
+            // Määramispiirkond — lihtne kontroll
+            let maar = "x ∈ ℝ";
+            const onSqrt = valem.includes("sqrt(");
+            const onLog = valem.includes("log(") || valem.includes("ln(");
+            if (onSqrt || onLog) maar = "Vaata graafikult (sisaldab sqrt/log)";
+
+            // Tuletis sümboolselt
+            const tuletisStr = arvutaTuletis(valem) ?? "Ei suutnud arvutada";
+
+            // Nullkohad
+            const nullid = leiaNullkohad(valem);
+            const nullStr = nullid.length === 0
+                ? "Nullkohti ei leitud vahemikus [−10; 10]"
+                : nullid.map((x, i) => `x${i + 1} = ${umber(x)}`).join(", ");
+
+            // Kriitilised punktid ja ekstreemumid
+            const kriitilised = leiKriitilised(valem);
+            let kriitStr = "", ekstrStr = "";
+
+            if (kriitilised.length === 0) {
+                kriitStr = "Kriitilisi punkte ei leitud";
+                ekstrStr = "Ekstreemume ei leitud";
+            } else {
+                const kriitOsad = [], ekstrOsad = [];
+                for (const kx of kriitilised) {
+                    const ky = f(valem, kx);
+                    const d2 = d2f(valem, kx);
+                    kriitOsad.push(`x = ${umber(kx)}`);
+                    if (ky !== null) {
+                        if (d2 !== null && d2 < -1e-4) {
+                            ekstrOsad.push(`maksimum: (${umber(kx)}; ${umber(ky)})`);
+                        } else if (d2 !== null && d2 > 1e-4) {
+                            ekstrOsad.push(`miinimum: (${umber(kx)}; ${umber(ky)})`);
+                        } else {
+                            ekstrOsad.push(`käändepunkt: (${umber(kx)}; ${umber(ky)})`);
+                        }
+                    }
+                }
+                kriitStr = kriitOsad.join(", ");
+                ekstrStr = ekstrOsad.length > 0 ? ekstrOsad.join(", ") : "Ekstreemume ei leitud";
+            }
+
+            document.getElementById("maaramispiirkond").textContent = maar;
+            document.getElementById("tuletis").textContent = tuletisStr;
+            document.getElementById("nullkohad").textContent = nullStr;
+            document.getElementById("kriitilisedPunktid").textContent = kriitStr;
+            document.getElementById("ekstreemumid").textContent = ekstrStr;
+            document.getElementById("tulemused").style.display = "block";
+
+            joonistaMaGraafik(valem);
         }
 
-        function puhasta() {
-            input.value = "";
-            input.focus();
+        function joonistaMaGraafik(valem) {
+            const canvas = document.getElementById("funktsiooniGraafik");
+            canvas.style.display = "block";
+
+            const xArr = [], yArr = [];
+            for (let x = -5; x <= 5; x += 0.05) {
+                xArr.push(Number(x.toFixed(2)));
+                const val = f(valem, x);
+                yArr.push(val !== null && Math.abs(val) < 1000 ? val : null);
+            }
+
+            if (graafik) graafik.destroy();
+            graafik = new Chart(canvas, {
+                type: "line",
+                data: {
+                    labels: xArr,
+                    datasets: [{
+                        label: "f(x) = " + valem,
+                        data: yArr,
+                        borderColor: "royalblue",
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        tension: 0.2,
+                        fill: false,
+                        spanGaps: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: true } },
+                    scales: {
+                        x: { title: { display: true, text: "x" } },
+                        y: { title: { display: true, text: "y" } }
+                    }
+                }
+            });
         }
 
-                function arvutaFunktsioon() {
-
-
-        const valem = document.getElementById("valemInput").value
-            .trim()
-            .replace(/\s+/g, "");
-
-        if (valem === "") {
-            alert("Sisesta kõigepealt funktsioon.");
-            return;
+        function salvesta() {
+            const valem = input.value.trim();
+            if (!valem) { alert("Arvuta kõigepealt funktsioon."); return; }
+            document.getElementById("hValem").value = valem;
+            document.getElementById("hMaaramispiirkond").value = document.getElementById("maaramispiirkond").textContent;
+            document.getElementById("hTuletis").value = document.getElementById("tuletis").textContent;
+            document.getElementById("hKriitilised").value = document.getElementById("kriitilisedPunktid").textContent;
+            document.getElementById("hEkstreemumid").value = document.getElementById("ekstreemumid").textContent;
+            document.getElementById("salvestaForm").submit();
         }
-
-        const maaramispiirkond =
-            document.getElementById("maaramispiirkond");
-
-        const tuletis =
-            document.getElementById("tuletis");
-
-        const kriitilised =
-            document.getElementById("kriitilisedPunktid");
-
-        const ekstreemumid =
-            document.getElementById("ekstreemumid");
-
-
-        // Määramispiirkond
-        maaramispiirkond.value = "x ∈ ℝ";
-
-
-        // x² - 4x + 3
-        if (
-            valem === "x^2-4*x+3" ||
-            valem === "x^2-4x+3"
-        ) {
-
-            tuletis.value = "2*x - 4";
-
-            kriitilised.value = "x = 2";
-
-            ekstreemumid.value =
-                "miinimum: (2; -1)";
-
-            return;
-        }
-
-
-        // x³ - 3x
-        if (
-            valem === "x^3-3*x" ||
-            valem === "x^3-3x"
-        ) {
-
-            tuletis.value = "3*x^2 - 3";
-
-            kriitilised.value =
-                "x = -1, x = 1";
-
-            ekstreemumid.value =
-                "maksimum: (-1; 2), miinimum: (1; -2)";
-
-            return;
-        }
-
-
-        // Kui funktsioon pole пока поддерживается
-        tuletis.value = "";
-        kriitilised.value = "";
-        ekstreemumid.value = "";
-
-        alert(
-            "Selle funktsiooni automaatne arvutamine ei ole veel lisatud."
-        );
-      
-
-        }
-
     </script>
-
-
 }

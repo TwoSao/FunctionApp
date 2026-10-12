@@ -1,59 +1,47 @@
-﻿@model FunctionApp.Models.FunktsiooniUurimine
+@model FunctionApp.Models.FunktsiooniUurimine
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Muuda funktsiooni";
 }
 
-<h1>Edit</h1>
-
-<h4>FunktsiooniUurimine</h4>
+<h2>Muuda funktsiooni</h2>
 <hr />
+
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-5">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Valem" class="control-label"></label>
+            <input type="hidden" asp-for="LuodudAeg" />
+
+            <div class="form-group mb-3">
+                <label asp-for="Valem" class="control-label">Valem f(x)</label>
                 <input asp-for="Valem" class="form-control" />
                 <span asp-validation-for="Valem" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Maaramispiirkond" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="Maaramispiirkond" class="control-label">Määramispiirkond</label>
                 <input asp-for="Maaramispiirkond" class="form-control" />
-                <span asp-validation-for="Maaramispiirkond" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Tuletis" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="Tuletis" class="control-label">Tuletis f'(x)</label>
                 <input asp-for="Tuletis" class="form-control" />
-                <span asp-validation-for="Tuletis" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="KriitilisedPunktid" class="control-label"></label>
+            <div class="form-group mb-3">
+                <label asp-for="KriitilisedPunktid" class="control-label">Kriitilised punktid</label>
                 <input asp-for="KriitilisedPunktid" class="form-control" />
-                <span asp-validation-for="KriitilisedPunktid" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Ekstreemumid" class="control-label"></label>
+            <div class="form-group mb-4">
+                <label asp-for="Ekstreemumid" class="control-label">Ekstreemumid</label>
                 <input asp-for="Ekstreemumid" class="form-control" />
-                <span asp-validation-for="Ekstreemumid" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="LuodudAeg" class="control-label"></label>
-                <input asp-for="LuodudAeg" class="form-control" />
-                <span asp-validation-for="LuodudAeg" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+
+            <input type="submit" value="Salvesta muudatused" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-outline-secondary ms-2">Tühista</a>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

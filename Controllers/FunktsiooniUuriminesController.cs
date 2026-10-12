@@ -54,10 +54,11 @@ namespace FunctionApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Valem,Maaramispiirkond,Tuletis,KriitilisedPunktid,Ekstreemumid,LuodudAeg")] FunktsiooniUurimine funktsiooniUurimine)
+        public async Task<IActionResult> Create([Bind("Valem,Maaramispiirkond,Tuletis,KriitilisedPunktid,Ekstreemumid")] FunktsiooniUurimine funktsiooniUurimine)
         {
             if (ModelState.IsValid)
             {
+                funktsiooniUurimine.LuodudAeg = DateTime.UtcNow;
                 _context.Add(funktsiooniUurimine);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

@@ -1,65 +1,45 @@
-﻿@model IEnumerable<FunctionApp.Models.FunktsiooniUurimine>
+@model IEnumerable<FunctionApp.Models.FunktsiooniUurimine>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Salvestatud funktsioonid";
 }
 
-<h1>Index</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Salvestatud funktsioonid</h2>
+    <a asp-action="Create" class="btn btn-primary">+ Lisa uus</a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Valem)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Maaramispiirkond)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tuletis)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.KriitilisedPunktid)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ekstreemumid)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LuodudAeg)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Valem)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Maaramispiirkond)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tuletis)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.KriitilisedPunktid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ekstreemumid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LuodudAeg)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@if (!Model.Any())
+{
+    <p class="text-muted">Ühtegi funktsiooni pole veel salvestatud.</p>
 }
-    </tbody>
-</table>
+else
+{
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Valem</th>
+                <th>Tuletis</th>
+                <th>Ekstreemumid</th>
+                <th>Salvestatud</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Valem</td>
+                    <td>@item.Tuletis</td>
+                    <td>@item.Ekstreemumid</td>
+                    <td>@item.LuodudAeg.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Vaata</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Muuda</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Kustuta</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
